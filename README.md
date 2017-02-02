@@ -1,5 +1,4 @@
 # NODE & YARN INSTALLER FOR DOCKER
----
 
 This script is a high-performance script for setting up Node & Yarn in docker,
 it is fast, secure and more efficient than regular installation methods, taking
