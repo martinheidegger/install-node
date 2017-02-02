@@ -1,13 +1,12 @@
 # Install [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com) quickly in [docker](https://docker.com) files
 
-
 The `install_node.sh` script is a high-performance script for setting up Node & Yarn in docker,
 it is fast, secure and more efficient than regular installation methods, taking
 advantage of the way docker works.
 
 ## Why it is better? ⚡️
 - You reduce the lines in your docker file to 1
-- It downloads both Yarn and Docker in parallel - fast ;) 
+- It downloads both Yarn and Docker in parallel - fast 
 - It securely supports mirrors in case you have a faster mirror to download Node or Yarn.
 - Every variable is taken directly. 
 - It doesn't leave any files behind - the Docker image will not hold any temporary files
@@ -45,9 +44,10 @@ advantage of the way docker works.
     B. Use curl to download the file from github:
 
       ```dockerfile
-      RUN NODE_VERSION="v5.1.0" \
+      RUN curl -sL https://raw.githubusercontent.com/martinheidegger/install-node/master/install_node.sh \
+          NODE_VERSION="v5.1.0" \
           YARN_VERSION="v0.19.1" \
-          (curl -sL https://raw.githubusercontent.com/martinheidegger/install-node/master/install_node.sh | bash)
+          bash
       ``` 
         
       This is better when you want to make sure that this build file is up-to-date and to reduce the
@@ -68,7 +68,7 @@ RUN NODE_MIRROR="https://nodejs.org/dist" \
 Note: Even though you specify a different mirror, the integration checks will run against data from the
       original mirrors!
 
-### Installation variants
+## Installation variants
 
 By default this script will take the 'linux-x64' variant. If you need another variant, specify it like
 
@@ -81,7 +81,7 @@ RUN NODE_VARIANT="linux-x86" \
  
 You can peek into a node dist folder like https://nodejs.org/dist/v6.9.4/ to look for the available variants.
 
-### Usable node
+## Usable node
 
 The default node script is trimmed for production, which means files like docs or npm will be dropped! In order
 To keep them it you can pass in: `KEEP_EXTRAS=true` and all the nice files will be kept.
