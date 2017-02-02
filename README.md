@@ -1,4 +1,4 @@
-# NODE & YARN INSTALLER FOR DOCKER
+# [Node.js](https://nodejs.org) & [Yarn](https://yarnpkg.com) installer for [docker](https://docker.com) files
 
 This script is a high-performance script for setting up Node & Yarn in docker,
 it is fast, secure and more efficient than regular installation methods, taking
