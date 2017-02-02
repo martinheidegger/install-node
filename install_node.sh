@@ -70,7 +70,7 @@
 #      B. Use curl to download the file from github:
 #  
 #        ```dockerfile
-#        RUN curl -sL https://raw.githubusercontent.com/martinheidegger/install-node/master/install_node.sh \
+#        RUN curl -sL https://raw.githubusercontent.com/martinheidegger/install-node/master/install_node.sh | \
 #            NODE_VERSION="v5.1.0" \
 #            YARN_VERSION="v0.19.1" \
 #            bash
