@@ -1,7 +1,7 @@
 # Install [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com) quickly in [docker](https://docker.com) files
 
 
-` script is a high-performance script for setting up Node & Yarn in docker,
+The `install_node.sh` script is a high-performance script for setting up Node & Yarn in docker,
 it is fast, secure and more efficient than regular installation methods, taking
 advantage of the way docker works.
 
@@ -31,27 +31,27 @@ advantage of the way docker works.
 
     A. Copy this file in your project and add following to your Dockerfile 
    
-        ```dockerfile
-        ADD install_node.sh
-        RUN NODE_VERSION="v5.1.0" \
-            YARN_VERSION="v0.19.1" \
-            bash /install_node.sh \
-            && rm scripts/install_node.sh
-        ```
+      ```dockerfile
+      ADD install_node.sh
+      RUN NODE_VERSION="v5.1.0" \
+          YARN_VERSION="v0.19.1" \
+          bash /install_node.sh \
+          && rm scripts/install_node.sh
+      ```
 
-        This is better when you want to reduce the build time and
-        are okay with updating this script by hand.
+      This is better when you want to reduce the build time and
+      are okay with updating this script by hand.
 
     B. Use curl to download the file from github:
-       
-        ```dockerfile
-        RUN NODE_VERSION="v5.1.0" \
-            YARN_VERSION="v0.19.1" \
-            (curl -sL https://raw.githubusercontent.com/martinheidegger/install-node/master/install_node.sh | bash)
-        ``` 
+
+      ```dockerfile
+      RUN NODE_VERSION="v5.1.0" \
+          YARN_VERSION="v0.19.1" \
+          (curl -sL https://raw.githubusercontent.com/martinheidegger/install-node/master/install_node.sh | bash)
+      ``` 
         
-        This is better when you want to make sure that this build file is up-to-date and to reduce the
-        dockerfile steps.
+      This is better when you want to make sure that this build file is up-to-date and to reduce the
+      dockerfile steps.
 
 ## Specifying a node mirror
 
