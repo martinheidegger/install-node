@@ -166,7 +166,7 @@ fi
 (type git) || (echo "GIT NOT FOUND!" >&2 exit 1)
 
 get_it () {
-    INSTALL_FOLDER=$(readlink -f "${INSTALL_FOLDER}")
+    INSTALL_FOLDER=$(readlink -f "${INSTALL_FOLDER}" || echo "${INSTALL_FOLDER}")
     echo "Loading $1 from ${URL}"
     (cd "${INSTALL_FOLDER}" 2> /dev/null) \
         && echo "ERROR: Install folder for $1: '${INSTALL_FOLDER}' already exists" >&2 \
