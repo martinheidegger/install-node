@@ -168,7 +168,24 @@ if [ ! -z "${missing}" ]; then
     exit 1
 fi
 
-(type git) || (echo "GIT NOT FOUND!" >&2 exit 1)
+DEP_MISSING=false
+(type git) || (echo "Git required for download several node packages!" >&2; export DEP_MISSING=true)
+(type curl) || (echo "curl required to download everything!" >&2; export DEP_MISSING=true)
+(type gpg) || (echo "GNUPG required to verify the downloads!" >&2; export DEP_MISSING=true)
+
+if [ "${NODE_VARIANT}" == "make" ]; then
+    (type python) || (echo "Python required to make node!" >&2; export DEP_MISSING=true)
+    (type make) || (echo "Make required to make node!" >&2; export DEP_MISSING=true)
+    (type g++) || (echo "g++ required to make node!" >&2; export DEP_MISSING=true)
+else
+    (type python) || (echo "WARNING: Python recommended to build some NPM packages!" >&2)
+    (type make) || (echo "WARNING: make recommended to build some NPM packages!" >&2)
+    (type g++) || (echo "WARNING: g++ recommended to build some NPM packages!" >&2)
+fi
+
+if [ "${DEP_MISSING}" == "true" ]; then
+  exit 1
+fi
 
 get_it () {
     INSTALL_FOLDER=$(readlink -f "${INSTALL_FOLDER}" || echo "${INSTALL_FOLDER}")
