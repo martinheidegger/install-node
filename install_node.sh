@@ -109,7 +109,8 @@
 #
 #  ## Special variant "make"
 #
-#  If you supply the `NODE_VARIANT="make"` 
+#  If you supply the `NODE_VARIANT="make"` it will download the sources and install them directly, this is important
+#  in case the binary doesn't work in operating systems such as alpine-linux.
 #
 #  ## Usable node
 #  
