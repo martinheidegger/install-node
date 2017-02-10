@@ -81,6 +81,11 @@ RUN NODE_VARIANT="linux-x86" \
  
 You can peek into a node dist folder like https://nodejs.org/dist/v6.9.4/ to look for the available variants.
 
+## Special variant "make"
+
+If you supply the `NODE_VARIANT="make"` it will download the sources and install them directly, this is important
+in case the binary doesn't work in operating systems such as alpine-linux.
+
 ## Usable node
 
 The default node script is trimmed for production, which means files like docs or npm will be dropped! In order
