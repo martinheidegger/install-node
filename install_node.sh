@@ -106,7 +106,11 @@
 #  ```
 #   
 #  You can peek into a node dist folder like https://nodejs.org/dist/v6.9.4/ to look for the available variants.
-#  
+#
+#  ## Special variant "make"
+#
+#  If you supply the `NODE_VARIANT="make"` 
+#
 #  ## Usable node
 #  
 #  The default node script is trimmed for production, which means files like docs or npm will be dropped! In order
@@ -203,7 +207,10 @@ get_it () {
 }
 
 download_node () {
-    NODE="node-${NODE_VERSION}-${NODE_VARIANT}"
+    NODE="node-${NODE_VERSION}"
+    if [ "${NODE_VARIANT}" != "make" ]; then
+       NODE="${NODE}-${NODE_VARIANT}"
+    fi
     ( \
         URL="${NODE_MIRROR}/${NODE_VERSION}/${NODE}.tar.gz" \
         SHA_URL="https://nodejs.org/download/release/${NODE_VERSION}/SHASUMS256.txt" \
@@ -213,17 +220,33 @@ download_node () {
 }
 
 install_node () {
-    echo "Linking Node"
-    ln -s "${NODE_FOLDER}/bin/node" /usr/local/bin/node
-
+    if [ "${NODE_VARIANT}" == "make" ]; then
+        echo "Building Node"
+        HERE="$(pwd)"
+        cd "${NODE_FOLDER}"
+        ./configure
+        apk del .build-deps
+        make install
+        cd "$HERE"
+        rm -rf "${NODE_FOLDER}"
+    else
+        echo "Linking Node"
+        ln -s "${NODE_FOLDER}/bin/node" /usr/local/bin/node
+    fi
+    
     if [ "${KEEP_EXTRAS}" != "true" ]; then
         echo "Purging node extras"
-        rm -rf \
-            "${NODE_FOLDER}/lib/node_modules/" \
-            "${NODE_FOLDER}/*.md" \
-            "${NODE_FOLDER}/LICENSE" \
-            "${NODE_FOLDER}/bin/npm" \
-            "${NODE_FOLDER}/share/man"
+        if [ "${NODE_VARIANT}" == "make" ]; then
+            rm -f /usr/local/bin/npm
+            rm -rf /usr/local/lib/node_modules/npm
+        else
+            rm -rf \
+                "${NODE_FOLDER}/lib/node_modules/" \
+                "${NODE_FOLDER}/*.md" \
+                "${NODE_FOLDER}/LICENSE" \
+                "${NODE_FOLDER}/bin/npm" \
+                "${NODE_FOLDER}/share/man"
+        fi
     else
         echo "Linking NPM"
         ln -s "${NODE_FOLDER}/bin/npm" /usr/local/bin/npm
