@@ -6,7 +6,7 @@ advantage of the way docker works.
 
 ## Why it is better? ⚡️
 - You reduce the lines in your docker file to 1
-- It downloads both Yarn and Docker in parallel - fast 
+- It downloads both Yarn and Node in parallel - fast 
 - It securely supports mirrors in case you have a faster mirror to download Node or Yarn.
 - Every variable is taken directly. 
 - It doesn't leave any files behind - the Docker image will not hold any temporary files
