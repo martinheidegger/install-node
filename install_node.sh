@@ -24,7 +24,7 @@
 #  SOFTWARE.
 #
 #
-#  # Install [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com) quickly in [docker](https://docker.com) files
+#  # Install [Node.js](https://nodejs.org) and _(optionall)_ [Yarn](https://yarnpkg.com) quickly in [docker](https://docker.com) files
 #  
 #  The `install_node.sh` script is a high-performance script for setting up Node & Yarn in docker,
 #  it is fast, secure and more efficient than regular installation methods, taking
@@ -32,7 +32,7 @@
 #  
 #  ## Why it is better? ⚡️
 #  - You reduce the lines in your docker file to 1
-#  - It downloads both Yarn and Docker in parallel - fast 
+#  - It downloads both Yarn and Node in parallel - fast 
 #  - It securely supports mirrors in case you have a faster mirror to download Node or Yarn.
 #  - Every variable is taken directly. 
 #  - It doesn't leave any files behind - the Docker image will not hold any temporary files
@@ -257,18 +257,26 @@ install_node () {
     
     if [ "${KEEP_EXTRAS}" != "true" ]; then
         echo "Purging node extras"
-        if [ "${NODE_VARIANT}" == "make" ]; then
-            rm -f /usr/local/bin/npm
-            rm -rf /usr/local/lib/node_modules/npm
-        else
-            rm -rf \
-                "${NODE_FOLDER}/lib/node_modules/" \
-                "${NODE_FOLDER}/*.md" \
-                "${NODE_FOLDER}/LICENSE" \
-                "${NODE_FOLDER}/bin/npm" \
-                "${NODE_FOLDER}/share/man"
+        if [ "${YARN_VERSION}" ]; then
+            if [ "${NODE_VARIANT}" == "make" ]; then
+                echo "Purging built npm"
+                rm -f /usr/local/bin/npm
+                rm -rf /usr/local/lib/node_modules/npm
+            else
+                echo "Purging default npm"
+                rm -rf \
+                  "${NODE_FOLDER}/lib/node_modules/" \
+                  "${NODE_FOLDER}/bin/npm"
+            fi
         fi
-    else
+        
+        echo "Purging all manuals"
+        rm -rf \
+            "${NODE_FOLDER}/*.md" \
+            "${NODE_FOLDER}/LICENSE" \
+            "${NODE_FOLDER}/share/man"
+    fi
+    if [ which npm ]; then
         echo "Linking NPM"
         ln -s "${NODE_FOLDER}/bin/npm" /usr/local/bin/npm
     fi
@@ -302,16 +310,20 @@ install_yarn () {
     echo "Installed yarn: $(yarn --version)" || (echo "Yarn not properly installed" >2 && exit 1)
 }
 
-if [[ -z "${HOME}/.gnupg" ]]; then
+if [ -d "${HOME}/.gnupg" ]; then
     export DROP_GNUGP_FOLDER="1"
 fi
 
 OUT_FOLDER="$(mktemp -d)"
-echo "Downloading yarn in the background (${OUT_FOLDER})"
-(download_yarn >"${OUT_FOLDER}/yarn.out" 2>"${OUT_FOLDER}/yarn.err") &
-download_node || exit 1
+if [ "${YARN_VERSION}" ]; then 
+    echo "Downloading yarn in the background (${OUT_FOLDER})"
+    (download_yarn >"${OUT_FOLDER}/yarn.out" 2>"${OUT_FOLDER}/yarn.err") &
+    download_node || exit 1
 
-wait %1 || ERR=$?
+    wait %1 || ERR=$?
+else
+    download_node || exit 1
+fi
 
 if [ "$DROP_GNUGP_FOLDER" == "1" ]; then
     echo "Cleaning up Gnugp folder"
@@ -329,5 +341,8 @@ fi
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 install_node
-install_yarn
+
+if [ "${YARN_VERSION}" ]; then
+    install_yarn
+fi
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
