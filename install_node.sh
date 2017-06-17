@@ -275,9 +275,13 @@ install_node () {
             "${NODE_FOLDER}/LICENSE" \
             "${NODE_FOLDER}/share/man"
     fi
-    if [ which npm ]; then
+    if [ -z "${YARN_VERSION}" || "${KEEP_EXTRAS}" == "true" ]; then
         echo "Linking NPM"
         ln -s "${NODE_FOLDER}/bin/npm" /usr/local/bin/npm
+        echo "Installed NPM: $(npm -v)" || (echo "NPM not properly installd" >&2 && exit 1)
+    fi
+    if [ "${YARN_VERSION}" ]; then
+       echo "Installed YARN: $(yarn -v)" || (echo "Yarn not properly installd" >&2 && exit 1)
     fi
     echo "Installed Node.js: $(node -v)" || (echo "Node not properly installed" >&2 && exit 1)
 }
