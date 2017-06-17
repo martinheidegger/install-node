@@ -147,7 +147,6 @@ for field in \
     "NODE_VERSION"\
     "NODE_MIRROR"\
     "NODE_FOLDER"\
-    "YARN_VERSION"\
     "YARN_MIRROR"\
     "YARN_FOLDER"\
     "NODE_VARIANT"\
